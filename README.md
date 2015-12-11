@@ -1,6 +1,6 @@
 # snmp-simulator [![Circle CI](https://circleci.com/gh/xeemetric/snmp-simulator/tree/master.svg?style=svg)](https://circleci.com/gh/xeemetric/snmp-simulator/tree/master)
 
-A simple SNMP Simulator driven by agent\'s snmpwalk.
+A simple SNMP Simulator driven by agent's snmpwalk.
 
 
 ## Docker deployment

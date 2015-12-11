@@ -1,5 +1,6 @@
 *.py[cod]
 dist/
 log/
+venv*/
 *.egg-info/
 .idea/

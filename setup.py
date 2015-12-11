@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='snmp-simulator',
-    description='A simple SNMP Simulator driven by agent\'s snmpwalk',
+    description="A simple SNMP Simulator driven by agent's snmpwalk",
     version='0.6.0',
     author='Dmitry Korobitsin',
     author_email='korobicin@gmail.com',
@@ -16,5 +16,12 @@ setup(
     },
     platforms=['Any'],
     license='BSD',
+    classifiers=(
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Natural Language :: English',
+        'Programming Language :: Python'
+    ),
     zip_safe=False,
 )
