@@ -44,5 +44,3 @@ Assuming you have [Net-SNMP](http://www.net-snmp.org) CLI tools installed.
 ## Author
 
 Developed and maintained by [Dmitry Korobitsin](https://github.com/korobitsin).
-
-Sponsored by [XeeMetric, Inc](http://xeemetric.com)
