@@ -50,6 +50,8 @@ class SNMPAgent(object):
         config.addSocketTransport(self.snmpEngine, udp.domainName, udp.UdpTransport().openServerMode((host, port)))
         config.addV1System(self.snmpEngine, 'my-area', rcommunity)
         config.addVacmUser(self.snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6))
+        config.addV3User(self.snmpEngine, 'test')
+        config.addVacmUser(self.snmpEngine, 3, 'test', 'noAuthNoPriv', (1, 3, 6))
         self.snmpContext = context.SnmpContext(self.snmpEngine)
         self.mibBuilder = self.snmpContext.getMibInstrum().getMibBuilder()
         self.MibScalar, self.MibScalarInstance = self.mibBuilder.importSymbols('SNMPv2-SMI', 'MibScalar', 'MibScalarInstance')
