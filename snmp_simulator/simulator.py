@@ -40,7 +40,11 @@ def createVariable(SuperClass, getValue, *args):
     class Var(SuperClass):
         def getValue(self, name, idx):
             oid_value, oid_type_str = getValue(name, idx)
-            return self.getSyntax().clone(TYPE_MAP[oid_type_str](oid_value))
+            if oid_type_str == 'Hex-STRING':
+                oid_value_kwarg = dict(hexValue=oid_value.replace(' ', ''))
+            else:
+                oid_value_kwarg = dict(value=oid_value)
+            return self.getSyntax().clone(TYPE_MAP[oid_type_str](**oid_value_kwarg))
     return Var(*args)
 
 
@@ -50,6 +54,8 @@ class SNMPAgent(object):
         config.addSocketTransport(self.snmpEngine, udp.domainName, udp.UdpTransport().openServerMode((host, port)))
         config.addV1System(self.snmpEngine, 'my-area', rcommunity)
         config.addVacmUser(self.snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6))
+        config.addV3User(self.snmpEngine, 'test')
+        config.addVacmUser(self.snmpEngine, 3, 'test', 'noAuthNoPriv', (1, 3, 6))
         self.snmpContext = context.SnmpContext(self.snmpEngine)
         self.mibBuilder = self.snmpContext.getMibInstrum().getMibBuilder()
         self.MibScalar, self.MibScalarInstance = self.mibBuilder.importSymbols('SNMPv2-SMI', 'MibScalar', 'MibScalarInstance')
