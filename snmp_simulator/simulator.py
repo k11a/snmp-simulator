@@ -40,7 +40,11 @@ def createVariable(SuperClass, getValue, *args):
     class Var(SuperClass):
         def getValue(self, name, idx):
             oid_value, oid_type_str = getValue(name, idx)
-            return self.getSyntax().clone(TYPE_MAP[oid_type_str](oid_value))
+            if oid_type_str == 'Hex-STRING':
+                oid_value_kwarg = dict(hexValue=oid_value.replace(' ', ''))
+            else:
+                oid_value_kwarg = dict(value=oid_value)
+            return self.getSyntax().clone(TYPE_MAP[oid_type_str](**oid_value_kwarg))
     return Var(*args)
 
 
