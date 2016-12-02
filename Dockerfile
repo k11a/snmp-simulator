@@ -9,6 +9,6 @@ RUN set -x \
     && mv /tmp/simulator/tests/cisco_2801.walk / \
     && rm -rf /tmp/simulator
 
-EXPOSE 161
+EXPOSE 161/udp
 
 CMD ["snmp-simulator", "-s", "--host", "0.0.0.0", "--port", "161", "--walk_file", "cisco_2801.walk"]
