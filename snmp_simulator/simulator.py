@@ -53,9 +53,9 @@ class SNMPAgent(object):
         self.snmpEngine = engine.SnmpEngine()
         config.addSocketTransport(self.snmpEngine, udp.domainName, udp.UdpTransport().openServerMode((host, port)))
         config.addV1System(self.snmpEngine, 'my-area', rcommunity)
-        config.addVacmUser(self.snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6))
-        config.addV3User(self.snmpEngine, 'test')
-        config.addVacmUser(self.snmpEngine, 3, 'test', 'noAuthNoPriv', (1, 3, 6))
+        config.addVacmUser(self.snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6) )
+#        config.addV3User(self.snmpEngine, 'test')
+#        config.addVacmUser(self.snmpEngine, 3, 'test', 'noAuthNoPriv', (1, 3, 6))
         self.snmpContext = context.SnmpContext(self.snmpEngine)
         self.mibBuilder = self.snmpContext.getMibInstrum().getMibBuilder()
         self.MibScalar, self.MibScalarInstance = self.mibBuilder.importSymbols('SNMPv2-SMI', 'MibScalar', 'MibScalarInstance')
@@ -100,9 +100,9 @@ class Simulator(object):
         file_lines = file_text.split('\n')
         merged_lines = []
         for line in file_lines:
-            if not line.startswith('.1.3.6') and merged_lines:
-                merged_lines[-1] += '\n' + line
-            else:
+            # if not line.startswith('.1.3.6') and merged_lines:
+            #     merged_lines[-1] += '\n' + line
+            # else:
                 merged_lines.append(line)
 
         reg_line = re.compile('^\.(.*?)\s*=\s*(.*)$', re.MULTILINE)
@@ -151,9 +151,9 @@ class Simulator(object):
 
 def main():
     conf.script = 'simulator'
-    conf.add_option(name='walk_file', desc='SNMP Walk file')
+    conf.add_option(name='walk_file', default='walk_file', desc='SNMP Walk file')
     conf.add_option(name='host', default='127.0.0.1')
-    conf.add_option(name='port', default=161, otype=int)
+    conf.add_option(name='port', default=1610, otype=int)
     conf.add_option(name='rcommunity', default='public')
     conf.add_option(name='wcommunity', default='private')
     conf.setup(parse_cfg=False, pid=False)
