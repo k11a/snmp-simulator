@@ -9,6 +9,7 @@ from pysnmp.proto.api import v2c
 from pysnmp.proto import rfc1902
 
 
+
 class SNMPAgent(object):
     def __init__(self, host, port, rcommunity):
         self.snmpEngine = engine.SnmpEngine()
