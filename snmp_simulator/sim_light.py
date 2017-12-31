@@ -9,6 +9,31 @@ from pysnmp.proto.api import v2c
 from pysnmp.proto import rfc1902
 
 
+TYPE_MAP = {
+    'STRING': v2c.OctetString,
+    'INTEGER': v2c.Integer32,
+    'IpAddress': v2c.IpAddress,
+    'Timeticks': v2c.TimeTicks,
+    'Counter32': v2c.Counter32,
+    'Counter64': v2c.Counter64,
+    'OID': v2c.ObjectIdentifier,
+    'Gauge32': v2c.Gauge32,
+    'Hex-STRING': v2c.OctetString,
+    'Network Address': v2c.OctetString,
+}
+
+
+def createVariable(SuperClass, getValue, *args):
+    class Var(SuperClass):
+        def getValue(self, name, idx):
+            oid_value, oid_type_str = getValue(name, idx)
+            if oid_type_str == 'Hex-STRING':
+                oid_value_kwarg = dict(hexValue=oid_value.replace(' ', ''))
+            else:
+                oid_value_kwarg = dict(value=oid_value)
+            return self.getSyntax().clone(TYPE_MAP[oid_type_str](**oid_value_kwarg))
+    return Var(*args)
+
 
 class SNMPAgent(object):
     def __init__(self, host, port, rcommunity):
@@ -112,9 +137,52 @@ class Simulator(object):
 
 
 def main():
-    simulator = Simulator(host='127.0.0.1', port=1610, rcommunity=public)
-    simulator.add_walkfile(conf.walk_file)
-    simulator.snmp_agent.serve_forever()
+    oid_dict = {}
+
+#    simulator = Simulator(host='127.0.0.1', port='1610', rcommunity='public')
+
+    snmpEngine = engine.SnmpEngine()
+    config.addSocketTransport(snmpEngine, udp.domainName, udp.UdpTransport().openServerMode(('127.0.0.1', '1610')))
+    config.addV1System(snmpEngine, 'my-area', 'public')
+    config.addVacmUser(snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6) )
+    snmpContext = context.SnmpContext(snmpEngine)
+    mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
+    MibScalar, MibScalarInstance = mibBuilder.importSymbols('SNMPv2-SMI', 'MibScalar', 'MibScalarInstance')
+    cmdrsp.GetCommandResponder(snmpEngine, self.snmpContext)
+    cmdrsp.NextCommandResponder(snmpEngine, self.snmpContext)
+    cmdrsp.BulkCommandResponder(snmpEngine, self.snmpContext)
+
+#    simulator.add_walkfile('walk_file')
+
+    oid_dict['1.3.6.1'] =   {
+                            'oid': '1.3.6.1',
+                            'name': None,
+                            'type': 'STRING',
+                            'value': 'test string 1',
+                            }
+    oid_dict['1.3.6.2'] =   {
+                            'oid': '1.3.6.2',
+                            'name': None,
+                            'type': 'STRING',
+                            'value': 'test string 2',
+                            }
+#    self.snmp_agent.add_oid(record['oid'], record['type'], self.get_value)
+
+        oid_num = rfc1902.ObjectName(oid).asTuple()
+        oid_type = TYPE_MAP[oid_type_str]
+        self.mibBuilder.exportSymbols(
+            '__MY_MIB',
+            self.MibScalar(oid_num[:-1], oid_type),
+            createVariable(self.MibScalarInstance, getValue, oid_num[:-1], (oid_num[-1],), oid_type)
+        )
+
+#    simulator.snmp_agent.serve_forever()
+
+        snmpEngine.transportDispatcher.jobStarted(1)
+        try:
+            snmpEngine.transportDispatcher.runDispatcher()
+        except KeyboardInterrupt:
+            snmpEngine.transportDispatcher.closeDispatcher()
 
 
 if __name__ == "__main__":
