@@ -134,7 +134,7 @@ class Simulator(object):
 
     def _add_oid_record(self, record):
         self.oid_dict[record['oid']] = record
-        self.snmp_agent.add_oid(record['oid'], record['type'], self.get_value)
+        self.snmintp_agent.add_oid(record['oid'], record['type'], self.get_value)
 
     def get_value(self, name, oid_):
         oid = '.'.join([str(i) for i in name])
