@@ -22,7 +22,7 @@ config.addTransport(
 config.addV1System(snmpEngine, 'my-area', 'public')
 
 # Allow read MIB access for this user / securityModels at VACM
-config.addVacmUser(snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6, 1, 4, 123456789))
+config.addVacmUser(snmpEngine, 2, 'my-area', 'noAuthNoPriv', (1, 3, 6, 1, 4, 1))
 
 # Create an SNMP context
 snmpContext = context.SnmpContext(snmpEngine)
@@ -37,8 +37,10 @@ MibScalar, MibScalarInstance = mibBuilder.importSymbols(
 
 
 mibBuilder.exportSymbols(
-    '__MY_MIB', MibScalar((1, 3, 6, 1, 4, 123456789, 1), v2c.OctetString()),
-    MibScalarInstance((1, 3, 6, 1, 4, 123456789, 1), (0,), v2c.OctetString('test'))
+    '__MY_MIB', MibScalar((1, 3, 6, 1, 4, 1, 0), v2c.OctetString()),
+    MibScalarInstance((1, 3, 6, 1, 4, 1, 0), (1,), v2c.OctetString('test 1')),
+    MibScalarInstance((1, 3, 6, 1, 4, 1, 0), (2,), v2c.OctetString('test 2')),
+    MibScalarInstance((1, 3, 6, 1, 4, 1, 0), (3,), v2c.OctetString('test 3'))
 )
 
 # --- end of Managed Object Instance initialization ----
